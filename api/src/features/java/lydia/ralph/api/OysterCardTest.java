@@ -1,4 +1,4 @@
-package lydia.ralph;
+package lydia.ralph.api;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;

@@ -16,6 +16,7 @@ repositories {
 }
 
 sourceSets.main.java.srcDirs = ['src/main/java']
+sourceSets.test.java.srcDirs = ['src/features/java']
 
 dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot', version: '3.3.1'
@@ -30,14 +31,34 @@ dependencies {
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.3.1'
 
-//    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
-//
-//    testImplementation 'org.junit.jupiter:junit-jupiter'
-//    testImplementation 'io.cucumber:cucumber-java:7.18.0'
-//    testImplementation 'io.cucumber:cucumber-junit:7.18.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation group: 'io.cucumber', name: 'cucumber-core', version: '7.18.0'
+    testImplementation 'io.cucumber:cucumber-java:7.18.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.18.0'
 }
 
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
 
 test {
     useJUnitPlatform()
 }
+
+tasks.register('cukes') {
+    dependsOn assemble, testClasses
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'lydia.ralph.api',
+                    'src/features/resources']
+        }
+    }
+}
+
