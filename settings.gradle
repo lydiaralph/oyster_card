@@ -1,2 +1,4 @@
-rootProject.name = 'lydia_ralph_oyster_card'
+rootProject.name = 'lydia.ralph'
+
+include 'api'
 

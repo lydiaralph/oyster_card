@@ -6,6 +6,10 @@ plugins {
 group = 'lydia.ralph'
 version = '1.0-SNAPSHOT'
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+}
+
 repositories {
     mavenCentral()
 }
@@ -14,27 +18,6 @@ configurations {
     cucumberRuntime {
         extendsFrom testImplementation
     }
-}
-
-dependencies {
-
-    implementation group: 'org.springframework.boot', name: 'spring-boot', version: '3.3.1'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
-
-    compileOnly 'org.projectlombok:lombok:1.18.34'
-    annotationProcessor 'org.projectlombok:lombok:1.18.34'
-
-    testCompileOnly 'org.projectlombok:lombok:1.18.34'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
-
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'io.cucumber:cucumber-java:7.18.0'
-    testImplementation 'io.cucumber:cucumber-junit:7.18.0'
-}
-
-test {
-    useJUnitPlatform()
 }
 
 tasks.register('cukes') {
