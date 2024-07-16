@@ -1,5 +1,10 @@
 Feature: User explores London
 
+  Scenario: A user can top up and check balance
+  As a user of the Oyster Card system
+    When I load my card with £27.00
+    Then I have £27.00 remaining balance
+
   Scenario: A user travels in Zones 1-2 and checks balance
   As a user of the Oyster Card system
     When I load my card with £30.00
