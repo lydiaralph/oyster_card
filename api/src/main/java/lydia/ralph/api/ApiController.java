@@ -1,12 +1,11 @@
 package lydia.ralph.api;
 
-import lydia.ralph.UserRepository;
+import lydia.ralph.repositories.UserRepository;
 import lydia.ralph.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -14,11 +13,17 @@ import java.text.DecimalFormat;
 @RestController
 public class ApiController {
 
+    String BALANCE_REMAINING_STR = "Balance remaining for User %s: %s";
+
     DecimalFormat POUNDS_PENCE_FORMAT = new DecimalFormat("'£'0.00");
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @GetMapping("/")
+    public ApiController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @RequestMapping("/")
     public String home() {
         return "TODO: Welcome to Oyster Card System";
     }
@@ -26,12 +31,11 @@ public class ApiController {
     @GetMapping("/balance")
     public String viewBalance(@RequestParam String userId) {
         User user = userRepository.findById(userId).orElseThrow();
-
-        return String.format("Balance remaining for User %s: %s", userId, POUNDS_PENCE_FORMAT.format(user.getBalance()));
+        return String.format(BALANCE_REMAINING_STR, userId, POUNDS_PENCE_FORMAT.format(user.getBalance()));
     }
 
     @PutMapping("/balance")
-    public String balance(@RequestParam String userId, @RequestParam BigDecimal amount) {
+    public String topUpBalance(@RequestParam String userId, @RequestParam BigDecimal amount) {
         User user = userRepository.findById(userId).orElseThrow();
 
         user.setBalance(user.getBalance().add(amount));
@@ -45,4 +49,6 @@ public class ApiController {
     public String tap(@RequestParam(name = "userId") String userId, @RequestParam(name = "stationName") String stationName) {
         return String.format("TODO: Implement topUpBalance for userId %s, station name %s", userId, stationName);
     }
+
+
 }

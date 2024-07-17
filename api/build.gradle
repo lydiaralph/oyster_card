@@ -16,6 +16,7 @@ repositories {
 }
 
 sourceSets.main.java.srcDirs = ['src/main/java']
+sourceSets.test.java.srcDirs = ['src/test/java']
 sourceSets.test.java.srcDirs = ['src/features/java']
 
 dependencies {
@@ -34,7 +35,6 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.30'
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.3.1'
-
 
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation group: 'io.cucumber', name: 'cucumber-core', version: '7.18.0'

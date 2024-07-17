@@ -13,7 +13,8 @@ repositories {
 sourceSets.main.java.srcDirs = ['src/main/java']
 
 dependencies {
-    implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.2.0'
+     // Jakarta 3.2+ is incompatible with Spring 3.2 https://github.com/spring-projects/spring-boot/issues/39753
+    implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.1.0'
 
     implementation group: 'org.springframework.data', name: 'spring-data-jpa', version: '3.3.2'
 
