@@ -28,7 +28,7 @@ public class ApiController {
 
     @PutMapping("/tap")
     public String tap(@RequestParam(name = "userId") String userId, @RequestParam(name = "stationName") String stationName) {
-        return String.format("TODO: Implement topUpBalance for userId %s, station name %s", userId, stationName);
+        return oysterService.tap(userId, stationName);
     }
 
 

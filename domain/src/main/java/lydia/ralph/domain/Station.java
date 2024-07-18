@@ -1,12 +1,35 @@
 package lydia.ralph.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import lombok.*;
+import org.springframework.data.domain.Persistable;
 
-@Getter @Setter @NoArgsConstructor
-public class Station {
+@Getter
+@Setter
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+@Table(name = "stations")
+public class Station { // implements Persistable<String> {
+
+    @Id
+    @Column
     private String name;
-    private Integer minZone;
-    private Integer maxZone;
+
+    @Column
+    private Integer mainZone;
+
+    @Column
+    private Integer extraZone;
+
+//    @Transient
+//    private boolean isNew = true;
+//
+//    @Override
+//    public String getId() {
+//        return getName();
+//    }
 }

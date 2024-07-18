@@ -4,6 +4,7 @@ plugins {
     id("io.freefair.lombok") version "8.6"
 }
 
+
 group = 'lydia.ralph.api'
 version = '1.0-SNAPSHOT'
 
@@ -15,9 +16,27 @@ repositories {
     mavenCentral()
 }
 
+
 sourceSets.main.java.srcDirs = ['src/main/java']
 sourceSets.test.java.srcDirs = ['src/test/java']
-sourceSets.test.java.srcDirs = ['src/features/java']
+sourceSets.main.resources.srcDirs += "src/main/resources"
+sourceSets.test.resources.srcDirs += "src/test/resources"
+
+
+sourceSets {
+    integration {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    integrationImplementation.extendsFrom implementation
+    integrationImplementation.extendsFrom testImplementation
+    integrationCompile.extendsFrom testCompile
+    integrationRuntime.extendsFrom testRuntime
+}
+
 
 dependencies {
     implementation project(':domain')
@@ -35,35 +54,49 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.30'
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.3.1'
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.3.1'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.3'
+
     testImplementation group: 'io.cucumber', name: 'cucumber-core', version: '7.18.0'
+
     testImplementation 'io.cucumber:cucumber-java:7.18.0'
     testImplementation 'io.cucumber:cucumber-junit:7.18.0'
-}
-
-configurations {
-    cucumberRuntime {
-        extendsFrom testImplementation
-    }
+    testImplementation 'io.cucumber:cucumber-spring:7.8.0'
 }
 
 test {
     useJUnitPlatform()
-}
 
-tasks.register('cukes') {
-    dependsOn assemble, testClasses
-    doLast {
-        javaexec {
-            main = "io.cucumber.core.cli.Main"
-            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = [
-                    '--plugin', 'pretty',
-                    '--plugin', 'html:target/cucumber-report.html',
-                    '--glue', 'lydia.ralph.api',
-                    'src/features/resources']
-        }
+    dependsOn 'cleanTest'
+
+    testLogging {
+        events "passed", "skipped", "failed"
     }
 }
 
+tasks.register('cukes', Test) {
+    description = 'Runs integration tests (located in src/integration/...)'
+    group = "verification"
+    dependsOn assemble, testClasses
+
+    useJUnitPlatform()
+
+
+    testClassesDirs = sourceSets.integration.output.classesDirs
+    classpath = sourceSets.integration.runtimeClasspath + sourceSets.test.runtimeClasspath
+    shouldRunAfter(test)
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = sourceSets.test.runtimeClasspath + sourceSets.main.output + sourceSets.test.output
+
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'src/integration/java/lydia/ralph/api', 'src/integration/java/lydia/ralph/api/features',
+                    'src/integration/resources/lydia/ralph/api']
+        }
+    }
+}

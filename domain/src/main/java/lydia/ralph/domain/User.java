@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "users")
-public class User implements Persistable<String> {
+public class User { //implements Persistable<String> {
 
     @Id
     @Column
@@ -23,9 +23,21 @@ public class User implements Persistable<String> {
     @Column
     private BigDecimal balance;
 
+    public void addToBalance(BigDecimal amount) {
+        balance = balance.add(amount);
+    }
+
+    public void subFromBalance(BigDecimal amount) {
+        balance = balance.subtract(amount);
+    }
+
     @Column
     private BigDecimal dayTotal;
 
-    @Transient
-    private boolean isNew = true;
+    public void addToDayTotal(BigDecimal amount) {
+        dayTotal = dayTotal.add(amount);
+    }
+
+//    @Transient
+//    private boolean isNew = true;
 }

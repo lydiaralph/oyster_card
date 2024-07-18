@@ -1,35 +1,20 @@
-package lydia.ralph.api;
+package lydia.ralph.api.features;
 
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
+import io.cucumber.java.en.When;
 import lombok.extern.java.Log;
-import lydia.ralph.domain.User;
-import lydia.ralph.repositories.UserRepository;
-import org.junit.runner.RunWith;
+import lydia.ralph.api.OysterService;
+import lydia.ralph.api.OysterServiceIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
-//@RunWith(SpringRunner.class)
-@DataJpaTest
-@EnableJpaRepositories(basePackageClasses = UserRepository.class)
-@EntityScan(basePackageClasses = User.class)
-@SpringBootTest(classes = OysterCardApplication.class)
 @Log
-@RunWith(Cucumber.class)
-@CucumberOptions(features = "src/features/resources")
-public class OysterServiceTest {
+public class OysterServiceTest extends OysterServiceIntegrationTest {
 
     String TEST_USER_ID = "User123";
 
