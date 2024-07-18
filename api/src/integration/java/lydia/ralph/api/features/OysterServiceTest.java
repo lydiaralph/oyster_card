@@ -9,6 +9,11 @@ import lydia.ralph.api.OysterService;
 import lydia.ralph.api.OysterServiceIntegrationTest;
 import lydia.ralph.domain.Station;
 import lydia.ralph.domain.User;
+import lydia.ralph.repositories.JourneyRepository;
+import lydia.ralph.repositories.StationRepository;
+import lydia.ralph.repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
@@ -30,20 +35,49 @@ public class OysterServiceTest extends OysterServiceIntegrationTest {
     @Autowired
     private OysterService underTest;
 
+    @Autowired
+    private JourneyRepository journeyRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private StationRepository stationRepository;
+
     DecimalFormat POUNDS_PENCE_FORMAT = new DecimalFormat("'£'0.00");
 
     @Before
     public void init() {
         log.info("startup - creating DB connection");
-        User user = User.builder().user_name("Test User").id(TEST_USER_ID)
+
+        User testUser = User.builder().user_name("Test User").id(TEST_USER_ID)
                 .balance(BigDecimal.ZERO).dayTotal(BigDecimal.ZERO)
                 .build();
-        underTest.insertUser(user);
+        userRepository.findById(testUser.getUser_name()).ifPresentOrElse(
+                user -> {
+                    user.setBalance(testUser.getBalance());
+                    user.setDayTotal(testUser.getDayTotal());
+                    userRepository.save(user);
+                },
+                () -> userRepository.save(testUser)
+        );
 
-        underTest.insertStation(Station.builder().name("Holborn").mainZone(1).build());
-        underTest.insertStation(Station.builder().name("Hammersmith").mainZone(2).build());
-        underTest.insertStation(Station.builder().name("Wimbledon").mainZone(3).build());
-        underTest.insertStation(Station.builder().name("Earl's Court").mainZone(1).extraZone(2).build());
+        stationRepository.findById("Holborn").ifPresentOrElse(station -> {}, // do nothing
+                () -> stationRepository.save(Station.builder().name("Holborn").mainZone(1).build()));
+
+        stationRepository.findById("Hammersmith").ifPresentOrElse(station -> {}, // do nothing
+                () -> stationRepository.save(Station.builder().name("Hammersmith").mainZone(2).build()));
+
+        stationRepository.findById("Wimbledon").ifPresentOrElse(station -> {}, // do nothing
+                () -> stationRepository.save(Station.builder().name("Wimbledon").mainZone(3).build()));
+
+        stationRepository.findById("Earl's Court").ifPresentOrElse(station -> {}, // do nothing
+                () -> stationRepository.save(Station.builder().name("Earl's Court").mainZone(1).extraZone(2).build()));
+    }
+
+    @AfterEach
+    public void cleanup() {
+        journeyRepository.deleteAll();
     }
 
     @When("^I load my card with £(\\d[0-9]{0,10}\\.\\d{2})$")

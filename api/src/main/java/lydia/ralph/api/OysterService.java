@@ -35,14 +35,6 @@ public class OysterService {
     @Autowired
     private StationRepository stationRepository;
 
-    public void insertUser(User user) {
-        userRepository.save(user);
-    }
-
-    public void insertStation(Station station) {
-        stationRepository.save(station);
-    }
-
     public String getBalance(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(userId));
         return String.format(BALANCE_REMAINING_STR, userId, POUNDS_PENCE_FORMAT.format(user.getBalance()));
