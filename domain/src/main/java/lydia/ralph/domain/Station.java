@@ -1,9 +1,6 @@
 package lydia.ralph.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
 
@@ -13,6 +10,7 @@ import org.springframework.data.domain.Persistable;
 @Builder
 @AllArgsConstructor
 @Table(name = "stations")
+@Entity
 public class Station { // implements Persistable<String> {
 
     @Id
