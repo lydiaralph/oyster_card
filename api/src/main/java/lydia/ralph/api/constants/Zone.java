@@ -8,6 +8,7 @@ public enum Zone {
     TWO_ZONES_EXCL_ZONE_1,
     THREE_ZONES,
     BUS,
+    MIN,
     MAX
 }
 

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static lydia.ralph.api.constants.FareCalculator.getMaxFare;
 import static lydia.ralph.api.constants.StringFormats.BALANCE_REMAINING_STR;
 import static lydia.ralph.api.constants.StringFormats.POUNDS_PENCE_FORMAT;
 
@@ -34,6 +35,14 @@ public class OysterService {
     @Autowired
     private StationRepository stationRepository;
 
+    public void insertUser(User user) {
+        userRepository.save(user);
+    }
+
+    public void insertStation(Station station) {
+        stationRepository.save(station);
+    }
+
     public String getBalance(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(userId));
         return String.format(BALANCE_REMAINING_STR, userId, POUNDS_PENCE_FORMAT.format(user.getBalance()));
@@ -43,36 +52,38 @@ public class OysterService {
         User user = userRepository.findById(userId).orElseThrow();
 
         user.addToBalance(amount);
-//        user.setNew(false);
         userRepository.save(user);
 
         return String.format("New balance for user %s: %s", userId, POUNDS_PENCE_FORMAT.format(user.getBalance()));
     }
 
     public String tap(String userId, String stationName) {
-        Station station = stationRepository.findById(stationName).orElseThrow(() -> new IllegalArgumentException(stationName));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(userId));
+        Station station = stationRepository.findById(stationName).orElseThrow(() -> new IllegalArgumentException(stationName));
 
         List<Journey> journeysFromToday = journeyRepository.findByUserId(userId).stream()
                 .filter(journey -> journey.getJourneyDate().equals(LocalDate.now()))
                 .toList();
 
-        journeysFromToday.stream().filter(journey -> journey.getEndedAtStation().isEmpty()).findFirst().ifPresentOrElse(
+        journeysFromToday.stream().filter(journey -> journey.getEndedAtStation() == null).findFirst().ifPresentOrElse(
                 journey -> {
                     // Finish a started journey
                     journey.setEndedAtStation(station.getName());
                     journeyRepository.save(journey);
 
                     // Because the user was charged max fare for an incomplete journey
-                    BigDecimal toBeRefunded = FareCalculator.getFareForZone(Zone.MAX).subtract(user.getDayTotal());
+                    BigDecimal toBeRefunded = getMaxFare().subtract(user.getDayTotal());
                     if (toBeRefunded.compareTo(BigDecimal.ZERO) > 0) {
                         user.addToBalance(toBeRefunded);
                         userRepository.save(user);
                     }
 
                     Zone zoneForJourneysToday = getZoneForJourneysToday(journeysFromToday);
-                    BigDecimal chargeableAmount = FareCalculator.getFareForZone(Zone.MAX)
-                            .subtract(FareCalculator.getFareForZone(zoneForJourneysToday));
+                    BigDecimal chargeForToday = FareCalculator.getFareForZone(zoneForJourneysToday);
+
+                    BigDecimal chargeableAmount = (chargeForToday.compareTo(getMaxFare()) > 0)
+                            ? getMaxFare() : chargeForToday;
+
                     if (chargeableAmount.compareTo(BigDecimal.ZERO) > 0) {
                         user.subFromBalance(chargeableAmount);
                         user.addToDayTotal(chargeableAmount);
@@ -80,6 +91,12 @@ public class OysterService {
                     }
                 },
                 () -> {  // New journey
+                    if (user.getBalance().compareTo(FareCalculator.getFareForZone(Zone.MIN)) < 0) {
+                        throw new IllegalArgumentException(String.format("Cannot start a new journey because user %s has balance of %s (less than minimum fare %s)", userId,
+                                POUNDS_PENCE_FORMAT.format(user.getBalance()),
+                                POUNDS_PENCE_FORMAT.format(FareCalculator.getFareForZone(Zone.MIN))));
+                    }
+
                     Journey journey = Journey.builder()
                             .userId(userId)
                             .journeyDate(LocalDate.now())
@@ -88,7 +105,7 @@ public class OysterService {
                             .build();
                     journeyRepository.save(journey);
 
-                    BigDecimal chargeableAmount = FareCalculator.getFareForZone(Zone.MAX).subtract(user.getDayTotal());
+                    BigDecimal chargeableAmount = getMaxFare().subtract(user.getDayTotal());
                     if (chargeableAmount.compareTo(BigDecimal.ZERO) > 0) {
                         user.subFromBalance(chargeableAmount);
                         userRepository.save(user);

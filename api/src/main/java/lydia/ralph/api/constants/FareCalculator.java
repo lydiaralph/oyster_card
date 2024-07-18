@@ -1,7 +1,5 @@
 package lydia.ralph.api.constants;
 
-import com.fasterxml.jackson.databind.KeyDeserializer;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lydia.ralph.domain.Station;
 
 import java.math.BigDecimal;
@@ -11,10 +9,14 @@ import java.util.List;
 
 public class FareCalculator {
 
+    public static BigDecimal getMaxFare(){
+        return getFareForZone(Zone.MAX);
+    }
+
     // Put fares in properties?
     public static BigDecimal getFareForZone(Zone zone) {
         return switch (zone) {
-            case BUS -> new BigDecimal("1.80");
+            case BUS, MIN -> new BigDecimal("1.80");
             case ONE_ZONE_INCL_ZONE_1 -> new BigDecimal("2.50");
             case ONE_ZONE_EXCL_ZONE_1 -> new BigDecimal("2.00");
             case TWO_ZONES_INCL_ZONE_1 -> new BigDecimal("3.00");

@@ -2,11 +2,8 @@ package lydia.ralph.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -15,9 +12,10 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Journey { //implements Persistable<Integer> {
+public class Journey {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column
     private Integer id;
 
@@ -32,7 +30,4 @@ public class Journey { //implements Persistable<Integer> {
 
     @Column
     private LocalDate journeyDate;
-
-//    @Transient
-//    private boolean isNew = true;
 }

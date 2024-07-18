@@ -1,8 +1,10 @@
 package lydia.ralph.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.springframework.data.domain.Persistable;
 
 @Getter
 @Setter
@@ -11,7 +13,7 @@ import org.springframework.data.domain.Persistable;
 @AllArgsConstructor
 @Table(name = "stations")
 @Entity
-public class Station { // implements Persistable<String> {
+public class Station {
 
     @Id
     @Column
@@ -22,12 +24,4 @@ public class Station { // implements Persistable<String> {
 
     @Column
     private Integer extraZone;
-
-//    @Transient
-//    private boolean isNew = true;
-//
-//    @Override
-//    public String getId() {
-//        return getName();
-//    }
 }

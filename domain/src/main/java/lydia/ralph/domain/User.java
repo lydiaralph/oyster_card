@@ -1,17 +1,21 @@
 package lydia.ralph.domain;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.domain.Persistable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
-public class User { //implements Persistable<String> {
+public class User {
 
     @Id
     @Column
@@ -37,7 +41,4 @@ public class User { //implements Persistable<String> {
     public void addToDayTotal(BigDecimal amount) {
         dayTotal = dayTotal.add(amount);
     }
-
-//    @Transient
-//    private boolean isNew = true;
 }
