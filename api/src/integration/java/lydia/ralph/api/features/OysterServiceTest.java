@@ -7,6 +7,8 @@ import lombok.extern.java.Log;
 import lydia.ralph.api.OysterService;
 import lydia.ralph.api.OysterServiceIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -14,6 +16,10 @@ import java.text.DecimalFormat;
 import static org.junit.Assert.assertEquals;
 
 @Log
+@DataJpaTest
+@TestPropertySource(properties = {
+        "spring.jpa.hibernate.ddl-auto=validate"
+})
 public class OysterServiceTest extends OysterServiceIntegrationTest {
 
     String TEST_USER_ID = "User123";
