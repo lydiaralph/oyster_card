@@ -37,6 +37,11 @@ configurations {
     integrationRuntime.extendsFrom testRuntime
 }
 
+project.tasks.named("processResources") {
+//    https://github.com/gradle/gradle/issues/17236
+    duplicatesStrategy = 'include'
+}
+
 
 dependencies {
     implementation project(':domain')
