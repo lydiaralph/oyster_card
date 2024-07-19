@@ -56,3 +56,7 @@ nav + .container, nav + .container-fluid {
 .read-the-docs {
   color: #888;
 }
+
+.mainContent{
+  font-size: 2em;
+}

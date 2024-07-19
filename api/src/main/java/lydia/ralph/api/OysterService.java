@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static lydia.ralph.api.constants.FareCalculator.getMaxFare;
@@ -54,6 +55,8 @@ public class OysterService {
         Station station = stationRepository.findById(stationName).orElseThrow(() -> new IllegalArgumentException(stationName));
 
         List<Journey> journeysFromToday = journeyRepository.findByUserId(userId).stream()
+                .filter(Objects::nonNull)
+                .filter(journey -> journey.getJourneyDate() != null)
                 .filter(journey -> journey.getJourneyDate().equals(LocalDate.now()))
                 .toList();
 
@@ -71,14 +74,11 @@ public class OysterService {
                     }
 
                     Zone zoneForJourneysToday = getZoneForJourneysToday(journeysFromToday);
-                    BigDecimal chargeForToday = FareCalculator.getFareForZone(zoneForJourneysToday);
+                    BigDecimal chargeForThisJourney = FareCalculator.getFareForZone(zoneForJourneysToday).subtract(user.getDayTotal());
 
-                    BigDecimal chargeableAmount = (chargeForToday.compareTo(getMaxFare()) > 0)
-                            ? getMaxFare() : chargeForToday;
-
-                    if (chargeableAmount.compareTo(BigDecimal.ZERO) > 0) {
-                        user.subFromBalance(chargeableAmount);
-                        user.addToDayTotal(chargeableAmount);
+                    if (chargeForThisJourney.compareTo(BigDecimal.ZERO) > 0) {
+                        user.subFromBalance(chargeForThisJourney);
+                        user.addToDayTotal(chargeForThisJourney);
                         userRepository.save(user);
                     }
                 },

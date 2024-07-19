@@ -13,7 +13,6 @@ import lydia.ralph.repositories.JourneyRepository;
 import lydia.ralph.repositories.StationRepository;
 import lydia.ralph.repositories.UserRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
@@ -50,10 +49,10 @@ public class OysterServiceTest extends OysterServiceIntegrationTest {
     public void init() {
         log.info("startup - creating DB connection");
 
-        User testUser = User.builder().user_name("Test User").id(TEST_USER_ID)
+        User testUser = User.builder().userName("Test User").id(TEST_USER_ID)
                 .balance(BigDecimal.ZERO).dayTotal(BigDecimal.ZERO)
                 .build();
-        userRepository.findById(testUser.getUser_name()).ifPresentOrElse(
+        userRepository.findById(testUser.getUserName()).ifPresentOrElse(
                 user -> {
                     user.setBalance(testUser.getBalance());
                     user.setDayTotal(testUser.getDayTotal());

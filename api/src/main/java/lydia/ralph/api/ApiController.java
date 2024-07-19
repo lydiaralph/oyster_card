@@ -6,6 +6,8 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 public class ApiController implements WebMvcConfigurer {
@@ -19,18 +21,22 @@ public class ApiController implements WebMvcConfigurer {
     }
 
     @GetMapping("/balance")
-    public String balance(@RequestParam String userId) {
-        return oysterService.getBalance(userId);
+    public Map<String, String> balance(@RequestParam String userId) {
+        return wrap(oysterService.getBalance(userId));
     }
 
     @PutMapping("/balance")
-    public String balance(@RequestParam String userId, @RequestParam BigDecimal amount) {
-        return oysterService.updateBalance(userId, amount);
+    public Map<String, String> balance(@RequestParam String userId, @RequestParam BigDecimal amount) {
+        return wrap(oysterService.updateBalance(userId, amount));
     }
 
     @PutMapping("/tap")
-    public String tap(@RequestParam(name = "userId") String userId, @RequestParam(name = "stationName") String stationName) {
-        return oysterService.tap(userId, stationName);
+    public Map<String, String> tap(@RequestParam(name = "userId") String userId, @RequestParam(name = "stationName") String stationName) {
+        return wrap(oysterService.tap(userId, stationName));
+    }
+
+    private Map<String, String> wrap(String message){
+        return Collections.singletonMap("response", message);
     }
 
 

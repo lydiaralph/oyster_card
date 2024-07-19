@@ -22,7 +22,7 @@ public class User {
     private String id;
 
     @Column
-    private String user_name;
+    private String userName;
 
     @Column
     private BigDecimal balance;
