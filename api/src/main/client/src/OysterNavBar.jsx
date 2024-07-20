@@ -15,8 +15,8 @@ const OysterNavbar = () => {
             return null
         };
 
-        const queryBackend = async ({url, method, userId}) => {
-            fetch(`${url}`, {
+        const queryBackend = async ({url, method, params}) => {
+            fetch(`${url}?${params}`, {
                 method: `${method}`,
                 headers: {
                     'Accept': 'application/json',
@@ -28,7 +28,6 @@ const OysterNavbar = () => {
                     setResponseMessage(data.response);
                     renderContentBox(data.response)
                 });
-            // })
         }
 
         return (
@@ -36,19 +35,39 @@ const OysterNavbar = () => {
                 <h1>Welcome to Oyster!</h1>
                 <Navbar color="dark" dark expand="md">
                     <Nav className="justify-content-end" navbar>
-                        <button onClick={() => queryBackend({url: "/balance?userId=User123", method: "GET", userId: "TEST_USER_ID"})}>
+                        <button onClick={() => {
+                            const params = new URLSearchParams();
+                            params.append('userId', `${TEST_USER_ID}`);
+                            queryBackend({url: "/balance", method: "GET", params: params})
+                        }}
+                        >
                             Check Balance
                         </button>
 
-                        <button onClick={() => queryBackend({url: "/balance?userId=User123&amount=1.25", method: "PUT", userId: "TEST_USER_ID"})}>
+                        <button onClick={() => {
+                            const params = new URLSearchParams();
+                            params.append('userId', `${TEST_USER_ID}`);
+                            params.append('amount', '1.25');
+                            queryBackend({url: "/balance", method: "PUT", params: params})
+                        }}>
                             Top Up Balance
                         </button>
 
-                        <button onClick={() => queryBackend({url: "/tap?userId=User123&stationName=Holborn", method: "PUT", userId: "TEST_USER_ID"})}>
+                        <button onClick={() => {
+                            const params = new URLSearchParams();
+                            params.append('userId', `${TEST_USER_ID}`);
+                            params.append('stationName', 'Holborn');
+                            queryBackend({url: "/tap", method: "PUT", params: params})
+                        }}>
                             Tap (Tube)
                         </button>
 
-                        <button onClick={() => queryBackend({url: "/tap?userId=User123&stationName=bus", method: "PUT", userId: "TEST_USER_ID"})}>
+                        <button onClick={() => {
+                            const params = new URLSearchParams();
+                            params.append('userId', `${TEST_USER_ID}`);
+                            params.append('stationName', 'bus');
+                            queryBackend({url: "/tap", method: "PUT", params: params})
+                        }}>
                             Tap (Bus)
                         </button>
                     </Nav>
