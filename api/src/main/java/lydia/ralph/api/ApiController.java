@@ -1,5 +1,6 @@
 package lydia.ralph.api;
 
+import lydia.ralph.domain.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -7,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,6 +25,11 @@ public class ApiController implements WebMvcConfigurer {
     @GetMapping("/balance")
     public Map<String, String> balance(@RequestParam String userId) {
         return wrap(oysterService.getBalance(userId));
+    }
+
+    @GetMapping("/stations")
+    public List<String> stations() {
+        return oysterService.getStations();
     }
 
     @PutMapping("/balance")

@@ -10,6 +10,7 @@ import lydia.ralph.repositories.JourneyRepository;
 import lydia.ralph.repositories.StationRepository;
 import lydia.ralph.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static lydia.ralph.api.constants.FareCalculator.getMaxFare;
@@ -35,6 +37,8 @@ public class OysterService {
 
     @Autowired
     private StationRepository stationRepository;
+    @Autowired
+    private RestTemplateAutoConfiguration restTemplateAutoConfiguration;
 
     public String getBalance(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(userId));
@@ -48,6 +52,12 @@ public class OysterService {
         userRepository.save(user);
 
         return String.format("New balance for user %s: %s", userId, POUNDS_PENCE_FORMAT.format(user.getBalance()));
+    }
+
+    public List<String> getStations(){
+        List<String> stationNames = new ArrayList<>();
+        stationRepository.findAll().forEach(station -> stationNames.add(station.getName()));
+        return stationNames;
     }
 
     public String tap(String userId, String stationName) {
