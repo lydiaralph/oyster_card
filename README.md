@@ -1,6 +1,4 @@
-Written by [Lydia Ralph](https://www.linkedin.com/in/lydiaralph/)
-
-Created for HMCTS job application
+React + Spring Boot application
 
 ### Tech stack
 - Frontend: ReactJS with Vite template, npm
