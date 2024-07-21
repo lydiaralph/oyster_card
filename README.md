@@ -50,6 +50,8 @@ Error screen for UI
 
 Secure log in for UI
 
+Journeys on separate days. Must ensure user.dayTotal is reset every day.
+
 
 
 
