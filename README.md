@@ -30,3 +30,30 @@ This will start up the application at http://localhost:8080/
 ### Integration testing
 Not set up properly for running with Gradle. Can be run through IDE. 
 
+## Development
+
+### Frontend
+
+To recompile JSX changes: `npm run watch` in client dir. 
+
+### Awaiting development:
+
+Implemented bus-related functionality.
+
+Display response returned from API on UI.
+
+Tidy up gradle build files. 
+
+Select stations from dropdown list fetched from DB
+
+Styling for Main Content section of UI
+
+Error screen for UI
+
+Secure log in for UI
+
+
+
+
+
+

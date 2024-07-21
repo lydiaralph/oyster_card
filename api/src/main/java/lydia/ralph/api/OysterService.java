@@ -62,6 +62,12 @@ public class OysterService {
 
     public String tap(String userId, String stationName) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(userId));
+
+        if (stationName.equalsIgnoreCase("bus")){
+            // TODO: Handle bus journeys
+            return "TODO: Implement bus";
+        }
+
         Station station = stationRepository.findById(stationName).orElseThrow(() -> new IllegalArgumentException(stationName));
 
         List<Journey> journeysFromToday = journeyRepository.findByUserId(userId).stream()
@@ -103,7 +109,6 @@ public class OysterService {
                             .userId(userId)
                             .journeyDate(LocalDate.now())
                             .startedAtStation(station.getName())
-//                            .isNew(true)
                             .build();
                     journeyRepository.save(journey);
 
